@@ -19,6 +19,7 @@ async function run() {
         const database = client.db("jewelry_store");
         const jewelry = database.collection("jewelry");
         const ordersCollection = database.collection("orders");
+        const reviewCollection = database.collection("review");
 
         // find all jewelry product from database
         app.get("/jewelry/", async (req, res) => {
@@ -38,6 +39,13 @@ async function run() {
         app.post('/orders/', async (req, res) => {
             const product = req.body;
             const result = await ordersCollection.insertOne(product);
+            res.json(result);
+        })
+
+        // Add review to database collection
+        app.post('/review', async (req, res) => {
+            const review = req.body;
+            const result = await reviewCollection.insertOne(review);
             res.json(result);
         })
     }
