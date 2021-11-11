@@ -1,5 +1,6 @@
 const express = require('express');
 const { MongoClient } = require('mongodb');
+const ObjectId = require('mongodb').ObjectId;
 const app = express();
 const cors = require('cors');
 const port = process.env.PORT || 5000;
@@ -17,10 +18,27 @@ async function run() {
         await client.connect();
         const database = client.db("jewelry_store");
         const jewelry = database.collection("jewelry");
+        const ordersCollection = database.collection("orders");
 
+        // find all jewelry product from database
         app.get("/jewelry/", async (req, res) => {
             const cursor = await jewelry.find({}).toArray();
             res.send(cursor);
+        })
+
+        // find single jewelry product from database
+        app.get("/jewelry/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const cursor = await jewelry.findOne(query);
+            res.send(cursor);
+        })
+
+        // Add product to database collection
+        app.post('/orders/', async (req, res) => {
+            const product = req.body;
+            const result = await ordersCollection.insertOne(product);
+            res.json(result);
         })
     }
     finally {
