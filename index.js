@@ -27,6 +27,13 @@ async function run() {
             res.send(cursor);
         })
 
+        // Add a newJewelry product to database collection
+        app.post('/jewelry/', async (req, res) => {
+            const product = req.body;
+            const result = await jewelry.insertOne(product);
+            res.json(result);
+        })
+
         // find single jewelry product from database
         app.get("/jewelry/:id", async (req, res) => {
             const id = req.params.id;
@@ -35,11 +42,20 @@ async function run() {
             res.send(cursor);
         })
 
-        // Add product to database collection
+
+        // Add order product to database collection
         app.post('/orders/', async (req, res) => {
             const product = req.body;
             const result = await ordersCollection.insertOne(product);
             res.json(result);
+        })
+
+        // Find my orders from database
+        app.get('/orders/', async (req, res) => {
+            const email = req.query.email;
+            const query = { Email: email };
+            const order = await ordersCollection.find(query).toArray();
+            res.send(order);
         })
 
         // Add review to database collection
@@ -47,6 +63,12 @@ async function run() {
             const review = req.body;
             const result = await reviewCollection.insertOne(review);
             res.json(result);
+        })
+
+        // Find review to database collection
+        app.get('/review/', async (req, res) => {
+            const result = await reviewCollection.find({}).toArray();
+            res.send(result);
         })
     }
     finally {
