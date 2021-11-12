@@ -50,13 +50,51 @@ async function run() {
             res.json(result);
         })
 
+        // find all order product from database
+        app.get("/allorders/", async (req, res) => {
+            const cursor = await ordersCollection.find({}).toArray();
+            res.send(cursor);
+        })
+
         // Find my orders from database
         app.get('/orders/', async (req, res) => {
             const email = req.query.email;
-            const query = { Email: email };
+            const query = { email: email };
             const order = await ordersCollection.find(query).toArray();
             res.send(order);
         })
+
+        // Delete a Single Order API 
+        app.delete('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const quary = { _id: ObjectId(id) };
+            const result = await ordersCollection.deleteOne(quary);
+            console.log(result);
+        })
+
+        // Delete a Single Product API 
+        app.delete('/jewelry/:id', async (req, res) => {
+            const id = req.params.id;
+            const quary = { _id: ObjectId(id) };
+            const result = await jewelry.deleteOne(quary);
+            console.log(result);
+        })
+
+        // Update booking status
+        app.put('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    status: "approved"
+                },
+            };
+            const result = await ordersCollection.updateOne(filter, updateDoc, options);
+            // console.log(id);
+            res.json(result);
+        })
+
 
         // Add review to database collection
         app.post('/review', async (req, res) => {
