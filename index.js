@@ -81,7 +81,7 @@ async function run() {
             console.log(result); 0
         })
 
-        // Update booking status
+        // Update Order status
         app.put('/orders/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
