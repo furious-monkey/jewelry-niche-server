@@ -20,6 +20,7 @@ async function run() {
         const jewelry = database.collection("jewelry");
         const ordersCollection = database.collection("orders");
         const reviewCollection = database.collection("review");
+        const usersCollection = database.collection("users");
 
         // find all jewelry product from database
         app.get("/jewelry/", async (req, res) => {
@@ -77,7 +78,7 @@ async function run() {
             const id = req.params.id;
             const quary = { _id: ObjectId(id) };
             const result = await jewelry.deleteOne(quary);
-            console.log(result);
+            console.log(result); 0
         })
 
         // Update booking status
@@ -108,6 +109,47 @@ async function run() {
             const result = await reviewCollection.find({}).toArray();
             res.send(result);
         })
+
+        // New user save to database
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
+            console.log(result);
+            res.json(result);
+        });
+
+        // Save google user data to database
+        app.put('/users', async (req, res) => {
+            const user = req.body;
+            const filter = { email: user.email };
+            const options = { upsert: true };
+            const updateDoc = { $set: user };
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.json(result);
+        });
+
+        // make an user to admin
+        app.put('/users/admin', async (req, res) => {
+            const user = req.body;
+            const filter = { email: user.email };
+            const updateDoc = { $set: { role: 'admin' } };
+            const result = await usersCollection.updateOne(filter, updateDoc);
+            res.json(result);
+
+        })
+
+        // Cheack admin
+        app.get('/users/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email };
+            const user = await usersCollection.findOne(query);
+            let isAdmin = false;
+            if (user?.role === 'admin') {
+                isAdmin = true;
+            }
+            res.json({ admin: isAdmin });
+        })
+
     }
     finally {
         // await client.close();
@@ -115,8 +157,6 @@ async function run() {
 }
 run().catch(console.dir);
 
-
-// pass : yiCEzimhGU8CnaQK
 
 app.get('/', (req, res) => {
     res.send("Hello World")
