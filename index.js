@@ -43,26 +43,25 @@ async function run() {
             res.send(cursor);
         })
 
+        // find all order product from database
+        app.get("/orders/", async (req, res) => {
+            const cursor = await ordersCollection.find({}).toArray();
+            res.send(cursor);
+        })
+
+        // Find my orders from database
+        app.get('/orders/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email };
+            const order = await ordersCollection.find(query).toArray();
+            res.send(order);
+        })
 
         // Add order product to database collection
         app.post('/orders/', async (req, res) => {
             const product = req.body;
             const result = await ordersCollection.insertOne(product);
             res.json(result);
-        })
-
-        // find all order product from database
-        app.get("/allorders/", async (req, res) => {
-            const cursor = await ordersCollection.find({}).toArray();
-            res.send(cursor);
-        })
-
-        // Find my orders from database
-        app.get('/orders/', async (req, res) => {
-            const email = req.query.email;
-            const query = { email: email };
-            const order = await ordersCollection.find(query).toArray();
-            res.send(order);
         })
 
         // Delete a Single Order API 
