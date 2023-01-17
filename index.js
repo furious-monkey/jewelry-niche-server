@@ -28,6 +28,7 @@ async function run() {
             res.send(cursor);
         })
 
+        
         // Add a newJewelry product to database collection
         app.post('/jewelry/', async (req, res) => {
             const product = req.body;
