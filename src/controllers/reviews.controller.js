@@ -12,7 +12,7 @@ exports.getAllReview = async (req, res) => {
   res.send(result);
 }
 
-// @desc Get All review to database collection
+// @desc Add new review to database collection
 // @route POST /review/
 // @access public
 exports.addNewReview = async (req, res) => {

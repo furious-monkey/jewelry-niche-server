@@ -1,8 +1,8 @@
 const { ObjectId } = require('mongodb');
 const { getDatabase } = require('../../config/db.config');
 
-// @desc Get All orders from database
-// @route GET /orders/
+// @desc Get All users from database
+// @route GET /users/
 // @access private
 exports.getAllUser = async (req, res) => {
   const db = getDatabase();
@@ -11,7 +11,9 @@ exports.getAllUser = async (req, res) => {
   res.send(cursor);
 }
 
-//export postNewUser
+// @desc Add new user to the database
+// @route POST /users/
+// @access private
 exports.postNewUser = async (req, res) => {
   const user = req.body;
   const db = getDatabase();
@@ -20,7 +22,9 @@ exports.postNewUser = async (req, res) => {
   res.json(result);
 }
 
-//export updateUser
+// @desc Update user in the database
+// @route PUT /users/:id
+// @access private
 exports.updateUser = async (req, res) => {
   const user = req.body;
   const filter = { email: user.email };
@@ -32,7 +36,9 @@ exports.updateUser = async (req, res) => {
   res.json(result);
 }
 
-//export makeUserAdmin
+// @desc Make user admin in the database
+// @route PUT /users/make-admin
+// @access private
 exports.makeUserAdmin = async (req, res) => {
   const db = getDatabase();
   const usersCollection = db.collection("users");
@@ -43,7 +49,9 @@ exports.makeUserAdmin = async (req, res) => {
   res.json(result);
 }
 
-//export checkAdminByEmail
+// @desc Check if user is an admin by email
+// @route GET /users/admin/:email
+// @access private
 exports.checkAdminByEmail = async (req, res) => {
   const email = req.params.email;
   const query = { email: email };
